@@ -7,5 +7,48 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+library(dplyr)
+library(readr)
+library(ggplot2)
+
+options(scipen = 999)
+
+d_ai <- read_csv('../Data/final_coded_data.csv')
 ```
 
+# Hypotheses
+
+H1 Discourse source is associated with realism/authenticity framing.  
+H2 Discourse source is associated with human creativity/cultural framing.  
+H3 Discourse source is associated with production/control framing.  
+
+# Findings
+## Hypothesis 1
+```{r}
+d_ai %>%
+  group_by(
+    discourse_source
+  ) %>%
+  summarise(
+    realism_benefit = mean(realism_benefit_presence == "yes"),
+    realism_concern = mean(realism_concern_presence == "yes")
+  )
+```
+
+```{r}
+chisq.test(
+  d_ai$discourse_source,
+  d_ai$realism_benefit_presence
+)
+```
+
+```{r}
+chisq.test(
+  d_ai$discourse_source,
+  d_ai$realism_concern_presence
+)
+```
+
+We found that discourse source is associated with both realism/authenticity benefit framing, X2(df = 1, n = 226) = 44.51, p < .001, and realism/authenticity concern framing, X2(df = 1, n = 226) = 6.71, p = .010. 
+Official discourse was more likely to benefit-frame realism/authenticity (40.8%) than user discourse (4.7%), whereas user discourse was more likely to concern-frame realism/authenticity (12.7%) than official discourse (1.3%).
