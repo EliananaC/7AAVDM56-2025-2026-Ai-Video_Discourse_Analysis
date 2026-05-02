@@ -52,3 +52,32 @@ chisq.test(
 
 We found that discourse source is associated with both realism/authenticity benefit framing, X2(df = 1, n = 226) = 44.51, p < .001, and realism/authenticity concern framing, X2(df = 1, n = 226) = 6.71, p = .010. 
 Official discourse was more likely to benefit-frame realism/authenticity (40.8%) than user discourse (4.7%), whereas user discourse was more likely to concern-frame realism/authenticity (12.7%) than official discourse (1.3%).
+
+## Hypothesis 2
+```{r}
+d_ai %>%
+  group_by(
+    discourse_source
+  ) %>%
+  summarise(
+    human_benefit = mean(human_benefit_presence == "yes"),
+    human_concern = mean(human_concern_presence == "yes")
+  )
+```
+
+```{r}
+chisq.test(
+  d_ai$discourse_source,
+  d_ai$human_benefit_presence
+)
+```
+
+```{r}
+chisq.test(
+  d_ai$discourse_source,
+  d_ai$human_concern_presence
+)
+```
+
+We found that discourse source is associated with both human creativity/cultural benefit framing, X2(df = 1, n = 226) = 14.11, p < .001, and human creativity/cultural concern framing, X2(df = 1, n = 226) = 17.17, p < .001. 
+Official discourse was more likely to benefit-frame human creativity/cultural value (32.9%) than user discourse (11.3%), whereas user discourse was more likely to concern-frame human creativity/cultural value (21.3%) than official discourse (0%).
