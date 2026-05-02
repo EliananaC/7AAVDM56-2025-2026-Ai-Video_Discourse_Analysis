@@ -114,6 +114,33 @@ chisq.test(
 We found that discourse source is associated with both production/control benefit framing, X2(df = 1, n = 226) = 66.53, p < .001, and production/control concern framing, X2(df = 1, n = 226) = 6.71, p = .010. 
 Official discourse was more likely to benefit-frame production/control (69.7%) than user discourse (14.7%), whereas user discourse was more likely to concern-frame production/control (12.7%) than official discourse (1.3%).
 
+## Robustness checks for categorical comparisons
+```{r}
+fisher.test(table(d_ai$discourse_source, d_ai$realism_benefit_presence))
+```
+
+```{r}
+fisher.test(table(d_ai$discourse_source, d_ai$realism_concern_presence))
+```
+
+```{r}
+fisher.test(table(d_ai$discourse_source, d_ai$human_benefit_presence))
+```
+
+```{r}
+fisher.test(table(d_ai$discourse_source, d_ai$human_concern_presence))
+```
+
+```{r}
+fisher.test(table(d_ai$discourse_source, d_ai$control_benefit_presence))
+```
+
+```{r}
+fisher.test(table(d_ai$discourse_source, d_ai$control_concern_presence))
+```
+
+Results were substantively consistent in Fisher’s exact tests, including comparisons involving sparse cells: realism/authenticity benefit framing, p < .001; realism/authenticity concern framing, p = .003; human creativity/cultural benefit framing, p < .001; human creativity/cultural concern framing, p < .001; production/control benefit framing, p < .001; and production/control concern framing, p = .003.
+
 ## Overall pattern
 ```{r}
 summary_table <- d_ai %>%
@@ -237,6 +264,30 @@ d_ai %>%
 ```
 
 The violin plot shows that official discourse was more concentrated at positive balance scores, whereas user discourse was more concentrated around neutral or negative balance scores.
+
+## Robustness checks for score comparisons
+```{r}
+wilcox.test(
+  benefit_score ~ discourse_source,
+  data = d_ai
+)
+```
+
+```{r}
+wilcox.test(
+  concern_score ~ discourse_source,
+  data = d_ai
+)
+```
+
+```{r}
+wilcox.test(
+  balance_score ~ discourse_source,
+  data = d_ai
+)
+```
+
+The same overall pattern was also observed in Wilcoxon rank-sum tests: benefit score, W = 9790.5, p < .001; concern score, W = 3374, p < .001; and balance score, W = 10129, p < .001.
 
 ## Misalignment index
 ```{r}
