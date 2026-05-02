@@ -235,3 +235,131 @@ d_ai %>%
 
 The violin plot shows that official discourse was more concentrated at positive balance scores, whereas user discourse was more concentrated around neutral or negative balance scores.
 
+## Misalignment index
+```{r}
+official_row <- summary_table %>%
+  filter(discourse_source == "official")
+
+user_row <- summary_table %>%
+  filter(discourse_source == "user")
+```
+
+```{r}
+balanced_mi_table <- data.frame(
+  dimension = c("realism", "human", "control"),
+  official_benefit_gap = c(
+    official_row$realism_benefit - user_row$realism_benefit,
+    official_row$human_benefit - user_row$human_benefit,
+    official_row$control_benefit - user_row$control_benefit
+  ),
+  user_concern_gap = c(
+    user_row$realism_concern - official_row$realism_concern,
+    user_row$human_concern - official_row$human_concern,
+    user_row$control_concern - official_row$control_concern
+  )
+) %>%
+  mutate(
+    balanced_misalignment_hm = 2 * official_benefit_gap * user_concern_gap /
+      (official_benefit_gap + user_concern_gap)
+  )
+
+balanced_mi_table
+```
+
+```{r}
+balanced_mi_table %>%
+  ggplot(
+    aes(x = dimension, y = balanced_misalignment_hm)
+  ) +
+  geom_col() +
+  labs(
+    x = NULL,
+    y = "Balanced misalignment (HM)"
+  )
+```
+
+```{r}
+make_hm_table <- function(data) {
+  sample_summary <- data %>%
+    group_by(discourse_source) %>%
+    summarise(
+      realism_benefit = mean(realism_benefit_presence == "yes"),
+      realism_concern = mean(realism_concern_presence == "yes"),
+      human_benefit = mean(human_benefit_presence == "yes"),
+      human_concern = mean(human_concern_presence == "yes"),
+      control_benefit = mean(control_benefit_presence == "yes"),
+      control_concern = mean(control_concern_presence == "yes")
+    )
+  
+  official_row_boot <- sample_summary %>%
+    filter(discourse_source == "official")
+  
+  user_row_boot <- sample_summary %>%
+    filter(discourse_source == "user")
+  
+  data.frame(
+    dimension = c("realism", "human", "control"),
+    official_benefit_gap = c(
+      official_row_boot$realism_benefit - user_row_boot$realism_benefit,
+      official_row_boot$human_benefit - user_row_boot$human_benefit,
+      official_row_boot$control_benefit - user_row_boot$control_benefit
+    ),
+    user_concern_gap = c(
+      user_row_boot$realism_concern - official_row_boot$realism_concern,
+      user_row_boot$human_concern - official_row_boot$human_concern,
+      user_row_boot$control_concern - official_row_boot$control_concern
+    )
+  ) %>%
+    mutate(
+      balanced_misalignment_hm = 2 * official_benefit_gap * user_concern_gap /
+        (official_benefit_gap + user_concern_gap)
+    )
+}
+```
+
+```{r}
+bootstrap_hm <- function(data) {
+  sample_data <- data[sample(nrow(data), replace = TRUE), ]
+  
+  hm_table <- make_hm_table(sample_data)
+  
+  human_hm <- hm_table$balanced_misalignment_hm[hm_table$dimension == "human"]
+  control_hm <- hm_table$balanced_misalignment_hm[hm_table$dimension == "control"]
+  realism_hm <- hm_table$balanced_misalignment_hm[hm_table$dimension == "realism"]
+  
+  c(
+    human_minus_control = human_hm - control_hm,
+    human_minus_realism = human_hm - realism_hm
+  )
+}
+```
+
+```{r}
+set.seed(123)
+
+bootstrap_results <- replicate(
+  2000,
+  bootstrap_hm(d_ai)
+)
+
+bootstrap_results <- t(bootstrap_results) %>%
+  as.data.frame()
+```
+
+```{r}
+bootstrap_summary <- data.frame(
+  comparison = c("human_minus_control", "human_minus_realism"),
+  lower_95 = c(
+    quantile(bootstrap_results$human_minus_control, 0.025, na.rm = TRUE),
+    quantile(bootstrap_results$human_minus_realism, 0.025, na.rm = TRUE)
+  ),
+  upper_95 = c(
+    quantile(bootstrap_results$human_minus_control, 0.975, na.rm = TRUE),
+    quantile(bootstrap_results$human_minus_realism, 0.975, na.rm = TRUE)
+  )
+)
+
+bootstrap_summary
+```
+
+To capture bidirectional misalignment more directly, a balanced misalignment measure was calculated using the harmonic mean of the official benefit gap and the user concern gap. By this measure, human creativity/cultural framing showed the highest balanced misalignment descriptively. However, bootstrap comparisons suggested caution in interpreting differences between dimensions, as the 95% confidence intervals for both the human-minus-control difference [-0.088, 0.132] and the human-minus-realism difference [-0.060, 0.136] crossed zero.
