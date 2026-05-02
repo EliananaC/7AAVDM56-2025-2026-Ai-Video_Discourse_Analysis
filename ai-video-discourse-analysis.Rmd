@@ -177,3 +177,61 @@ heatmap_data %>%
 ```
 
 Overall, official discourse appeared more benefit-oriented than user discourse. The highest proportion in official discourse was production/control benefit framing (69.7%), followed by realism/authenticity benefit framing (40.8%) and human creativity/cultural benefit framing (32.9%). In user discourse, the highest proportion was human creativity/cultural concern framing (21.3%), followed by production/control benefit framing (14.7%) and both realism/authenticity concern framing and production/control concern framing (12.7%).
+
+## Additional analysis
+```{r}
+d_ai %>%
+  group_by(
+    discourse_source
+  ) %>%
+  summarise(
+    n = n(),
+    M_benefit = mean(benefit_score),
+    SD_benefit = sd(benefit_score),
+    M_concern = mean(concern_score),
+    SD_concern = sd(concern_score),
+    M_balance = mean(balance_score),
+    SD_balance = sd(balance_score)
+  )
+```
+
+```{r}
+d_ai %>%
+  t.test(
+    benefit_score ~ discourse_source,
+    data = .
+  )
+```
+
+```{r}
+d_ai %>%
+  t.test(
+    concern_score ~ discourse_source,
+    data = .
+  )
+```
+
+```{r}
+d_ai %>%
+  t.test(
+    balance_score ~ discourse_source,
+    data = .
+  )
+```
+
+We found that official discourse had a significantly higher benefit score than user discourse, t(112.14) = 10.96, p < .001, while user discourse had a significantly higher concern score than official discourse, t(189.67) = -8.72, p < .001. Official discourse also had a significantly higher balance score than user discourse, t(149.64) = 13.12, p < .001, indicating that official texts were overall more benefit-oriented, while user texts were overall more concern-oriented.
+
+```{r}
+d_ai %>%
+  ggplot(
+    aes(x = discourse_source, y = balance_score)
+  ) +
+  geom_violin() +
+  labs(
+    x = NULL,
+    y = "Balance score"
+  )
+```
+
+The violin plot shows that official discourse was more concentrated at positive balance scores, whereas user discourse was more concentrated around neutral or negative balance scores.
+
