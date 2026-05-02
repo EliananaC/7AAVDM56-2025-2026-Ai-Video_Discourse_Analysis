@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(readr)
 library(ggplot2)
+library(tidyr)
 
 options(scipen = 999)
 
@@ -110,3 +111,69 @@ chisq.test(
 
 We found that discourse source is associated with both production/control benefit framing, X2(df = 1, n = 226) = 66.53, p < .001, and production/control concern framing, X2(df = 1, n = 226) = 6.71, p = .010. 
 Official discourse was more likely to benefit-frame production/control (69.7%) than user discourse (14.7%), whereas user discourse was more likely to concern-frame production/control (12.7%) than official discourse (1.3%).
+
+## Overall pattern
+```{r}
+summary_table <- d_ai %>%
+  group_by(
+    discourse_source
+  ) %>%
+  summarise(
+    realism_benefit = mean(realism_benefit_presence == "yes"),
+    realism_concern = mean(realism_concern_presence == "yes"),
+    human_benefit = mean(human_benefit_presence == "yes"),
+    human_concern = mean(human_concern_presence == "yes"),
+    control_benefit = mean(control_benefit_presence == "yes"),
+    control_concern = mean(control_concern_presence == "yes")
+  )
+
+summary_table
+```
+
+```{r}
+frame_levels <- c(
+  "realism_benefit",
+  "realism_concern",
+  "human_benefit",
+  "human_concern",
+  "control_benefit",
+  "control_concern"
+)
+```
+
+```{r}
+heatmap_data <- summary_table %>%
+  pivot_longer(
+    cols = -discourse_source,
+    names_to = "frame_type",
+    values_to = "proportion"
+  ) %>%
+  mutate(
+    frame_type = frame_type %>%
+      ordered(
+        levels = frame_levels
+      )
+  )
+
+heatmap_data
+```
+
+```{r}
+heatmap_data %>%
+  ggplot(
+  aes(x = frame_type, y = discourse_source, fill = proportion)
+) +
+  geom_tile() +
+  geom_text(aes(label = round(proportion, 2))) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = "Proportion"
+  ) +
+  scale_fill_gradient(
+    low = "white",
+    high = "darkblue"
+  )
+```
+
+Overall, official discourse appeared more benefit-oriented than user discourse. The highest proportion in official discourse was production/control benefit framing (69.7%), followed by realism/authenticity benefit framing (40.8%) and human creativity/cultural benefit framing (32.9%). In user discourse, the highest proportion was human creativity/cultural concern framing (21.3%), followed by production/control benefit framing (14.7%) and both realism/authenticity concern framing and production/control concern framing (12.7%).
