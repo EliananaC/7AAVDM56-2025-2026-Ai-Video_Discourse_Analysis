@@ -8,7 +8,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = False)
+knitr::opts_chunk$set(echo = TRUE)
 
 library(dplyr)
 library(readr)
@@ -53,8 +53,8 @@ chisq.test(
 )
 ```
 
-We found that discourse source is associated with both realism/authenticity benefit framing, X2(df = 1, n = 226) = 44.51, p < .001, and realism/authenticity concern framing, X2(df = 1, n = 226) = 6.71, p = .010. 
-Official discourse was more likely to benefit-frame realism/authenticity (40.8%) than user discourse (4.7%), whereas user discourse was more likely to concern-frame realism/authenticity (12.7%) than official discourse (1.3%).
+We found that discourse source is associated with both realism/authenticity benefit framing, X2(df = 1, n = 226) = 44.51, p < .001, and realism/authenticity concern framing, X2(df = 1, n = 226) = 7.28, p = .007. 
+Official discourse was more likely to benefit-frame realism/authenticity (40.8%) than user discourse (4.7%), whereas user discourse was more likely to concern-frame realism/authenticity (13.3%) than official discourse (1.3%).
 
 ## Hypothesis 2
 ```{r}
@@ -178,7 +178,7 @@ heatmap_data %>%
   )
 ```
 
-Across the six framing categories, the most prominent pattern in official discourse was production/control benefit framing (69.7%), followed by realism/authenticity benefit framing (40.8%) and human creativity/cultural benefit framing (32.9%). In user discourse, the highest proportion was human creativity/cultural concern framing (21.3%), followed by production/control benefit framing (14.7%) and both realism/authenticity concern framing and production/control concern framing (12.7%).
+Across the six framing categories, the most prominent pattern in official discourse was production/control benefit framing (69.7%), followed by realism/authenticity benefit framing (40.8%) and human creativity/cultural benefit framing (32.9%). In user discourse, the highest proportion was human creativity/cultural concern framing (21.3%), followed by production/control benefit framing (14.7%), realism/authenticity concern framing (13.3%), and production/control concern framing (12.7%).
 
 ## Additional analysis
 ```{r}
@@ -221,7 +221,7 @@ d_ai %>%
   )
 ```
 
-We found that official discourse had a significantly higher benefit score than user discourse, t(112.14) = 10.96, p < .001, while user discourse had a significantly higher concern score than official discourse, t(189.67) = -8.72, p < .001. Official discourse also had a significantly higher balance score than user discourse, t(149.64) = 13.12, p < .001, indicating that official texts were overall more benefit-oriented, whereas user texts were overall more concern-oriented.
+We found that official discourse had a significantly higher benefit score than user discourse, t(112.14) = 10.96, p < .001, while user discourse had a significantly higher concern score than official discourse, t(189.63) = -8.85, p < .001. Official discourse also had a significantly higher balance score than user discourse, t(150.06) = 13.16, p < .001, indicating that official texts were overall more benefit-oriented, whereas user texts were overall more concern-oriented.
 
 
 ```{r}
@@ -365,4 +365,4 @@ bootstrap_summary <- data.frame(
 bootstrap_summary
 ```
 
-To capture bidirectional misalignment more directly, a balanced misalignment measure was calculated using the harmonic mean of the official benefit gap and the user concern gap. By this measure, human creativity/cultural framing showed the highest balanced misalignment descriptively. However, bootstrap comparisons suggested caution in interpreting differences between dimensions, as the 95% confidence intervals for both the human-minus-control difference [-0.088, 0.132] and the human-minus-realism difference [-0.060, 0.136] crossed zero.
+To capture bidirectional misalignment more directly, a balanced misalignment measure was calculated using the harmonic mean of the official benefit gap and the user concern gap. By this measure, human creativity/cultural framing showed the highest balanced misalignment descriptively. However, bootstrap comparisons suggested caution in interpreting differences between dimensions, as the 95% confidence intervals for both the human-minus-control difference [-0.088, 0.132] and the human-minus-realism difference [-0.068, 0.132] crossed zero.
