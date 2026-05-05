@@ -3,8 +3,8 @@ title: "AI video-generation discourse analysis"
 author: "Eliana"
 date: "2026-05-01"
 output:
-   word_document: default
    html_document: default
+   word_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -23,7 +23,7 @@ d_ai <- read_csv('../Data/final_coded_data.csv')
 # Hypotheses
 
 H1 Discourse source is associated with realism/authenticity framing.  
-H2 Discourse source is associated with human creativity/cultural framing.  
+H2 Discourse source is associated with human creativity/cultural value framing.  
 H3 Discourse source is associated with production/control framing.  
 
 # Findings
@@ -188,7 +188,7 @@ heatmap_data
 ```
 
 ```{r}
-heatmap_data %>%
+heatmap_plot <- heatmap_data %>%
   ggplot(
   aes(x = frame_type, y = discourse_source, fill = proportion)
 ) +
@@ -199,10 +199,25 @@ heatmap_data %>%
     y = NULL,
     fill = "Proportion"
   ) +
+  scale_x_discrete(
+    labels = c(
+      "realism_benefit" = "Realism\nbenefit",
+      "realism_concern" = "Realism\nconcern",
+      "human_benefit" = "Human\nbenefit",
+      "human_concern" = "Human\nconcern",
+      "control_benefit" = "Control\nbenefit",
+      "control_concern" = "Control\nconcern"
+    )
+  ) +
   scale_fill_gradient(
     low = "white",
     high = "darkblue"
-  )
+  ) +
+  theme(axis.text.x = element_text(angle = 0, hjust = 0.5))
+
+heatmap_plot
+
+ggsave("figures/heatmap.png", plot = heatmap_plot, width = 10, height = 4, dpi = 300)
 ```
 
 Across the six framing categories, the most prominent pattern in official discourse was production/control benefit framing (69.7%), followed by realism/authenticity benefit framing (40.8%) and human creativity/cultural benefit framing (32.9%). In user discourse, the highest proportion was human creativity/cultural concern framing (21.3%), followed by production/control benefit framing (14.7%), realism/authenticity concern framing (13.3%), and production/control concern framing (12.7%).
@@ -252,7 +267,7 @@ We found that official discourse had a significantly higher benefit score than u
 
 
 ```{r}
-d_ai %>%
+violin_plot <- d_ai %>%
   ggplot(
     aes(x = discourse_source, y = balance_score)
   ) +
@@ -261,6 +276,10 @@ d_ai %>%
     x = NULL,
     y = "Balance score"
   )
+
+violin_plot
+
+ggsave("figures/balance_violin.png", plot = violin_plot, width = 6, height = 4, dpi = 300)
 ```
 
 The violin plot shows that official discourse was more concentrated at positive balance scores, whereas user discourse was more concentrated around neutral or negative balance scores.
@@ -321,7 +340,7 @@ balanced_mi_table
 ```
 
 ```{r}
-balanced_mi_table %>%
+mi_plot <- balanced_mi_table %>%
   ggplot(
     aes(x = dimension, y = balanced_misalignment_hm)
   ) +
@@ -330,6 +349,10 @@ balanced_mi_table %>%
     x = NULL,
     y = "Balanced misalignment (HM)"
   )
+
+mi_plot
+
+ggsave("figures/mislignment_index.png", plot = mi_plot, width = 6, height = 4, dpi = 300)
 ```
 
 ```{r}
