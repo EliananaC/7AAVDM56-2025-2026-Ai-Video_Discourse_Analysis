@@ -17,7 +17,7 @@ library(tidyr)
 
 options(scipen = 999)
 
-d_ai <- read_csv('../Data/final_coded_data.csv')
+d_ai <- read_csv('data/cleaned_data.csv')
 ```
 
 # Hypotheses
